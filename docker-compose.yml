@@ -1,0 +1,26 @@
+version: '3'
+services:
+  fitbit-export:
+    build: .
+    ports:
+      - "4567:4567"
+    volumes:
+      - "./shared/fitbit-export:/myapp/shared"
+    env_file:
+      fitbit-export.env
+    depends_on:
+      - influxdb
+  influxdb:
+    image: influxdb:alpine
+    volumes:
+      - "./shared/influxdb:/var/lib/influxdb"
+    ports:
+      - "8086:8086"
+    environment:
+      INFLUXDB_DB: "fitbit"
+      INFLUXDB_USER: "fitbit"
+      INFLUXDB_PASSWORD: "fitbit"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
